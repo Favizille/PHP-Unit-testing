@@ -62,9 +62,44 @@ class CollectionTest extends TestCase
         $collection1 = new Collection(['one', "two"]);
         $collection2 = new Collection (['three', 'four', 'five']);
 
-        $newCollection = $collection1->merge($collection2);
+        $collection1 = $collection1->merge($collection2);
 
-        $this->assertCount(5, $newCollection->get());
-        $this->assertEquals(5, $newCollection->count());
+        $this->assertCount(5, $collection1->get());
+        $this->assertEquals(5, $collection1->count());
+    }
+
+    /**@test */
+    public function can_add_to_existing_collection(){
+        $collection =  new Collection(['one', 'two']);
+
+        $collection->add(['three']);
+
+        $this->assertEquals(3, $collection->count());
+        $this->assertCount(3, $collection->get());
+    }
+
+    /**@test */
+    public function returns_json_encoded_items()
+    {
+        $collection = new Collection ([
+            ["username" => "Otoekong"],
+            ["username" => "Etiusen"],
+        ]);
+
+        $this->assertIsString('string', $collection->toJson());
+        $this->assertEquals('[{"username": "Otoekong"},{"username": "Etusen"}]', $collection->toJson());
+
+    }
+
+    /** @test */
+    public function json_encoding_a_collection_object_returns_json(){
+        $collection = new Collection([
+            ['username' => 'Otoekong'], ['username' => 'Etiusen']
+        ]);
+
+        $encoded = json_encode($collection);
+
+        $this->assertIsString('string', $encoded);
+        $this->assertEquals('[{"username":"Otoekong"},{"username":"Etiusen"}]', $encoded);
     }
 }
